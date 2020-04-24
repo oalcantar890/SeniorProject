@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Create Task</title>
+	<link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+
+<body>
+	<form>
+		<div>
+			<label for = "name">Task Name</label>
+			<input for = "name" id = "name" type = "text" required>
+		</div>
+		<div>
+			<label for = "time">Duration</label>
+			<input type = "number" step = "1" id = "time">
+		</div>
+		<div class = "input-field">
+			<select>
+				<option value = "" disabled selected>Choose option</option>
+				<option value = "minutes">Minutes</option>
+				<option value = "hours">Hours</option>
+				<option value = "days">Days</option>
+			</select>
+		</div>
+		<div>
+			<label for="deadline">Deadline</label>
+			<input type="date" id="deadline">
+			<br><br>
+		</div>
+		<div id = "priority">
+			<!--<p>Priority</p>-->
+			<label>Priority</label>
+			<p>
+				<label>
+					<input type = "radio" name = "answer">
+					<span>High</span>
+				</label>
+			</p>
+			<p>
+				<label>
+					<input type = "radio" name = "answer">
+					<span>Medium</span>
+				</label>
+			</p>
+			<p>
+				<label>
+					<input type = "radio" name = "answer">
+					<span>Low</span>
+				</label>
+			</p>
+			<!--<input type="radio" name="answer" id="highPriority" value="highPriority">
+			<label for="highPriority">High</label>
+			<br>
+			<input type="radio" name="answer" id="medPriority" value="medPriority">
+			<label for="medPriority">Medium</label>
+			<br>
+			<input type="radio" name="answer" id="lowPriority" value="lowPriority">
+			<label for="lowPriority">Low</label>
+			<br>-->
+		</div>
+		<div>
+			<br><br>
+			<button class = "btn waves-effect waves-light" type = "submit">Create</button>
+		</div>
+	</form>
+
+	<script>
+		
+		const electron = require("electron");
+		const {ipcRenderer} = electron;
+
+		const form = document.querySelector("form");
+		form.addEventListener("submit", submitForm);
+
+		document.addEventListener("DOMContentLoaded", function(){
+			var elems = document.querySelectorAll("select");
+			var instances = M.FormSelect.init(elems, options);
+		});
+
+		function submitForm(e)
+		{
+			e.preventDefault();
+			const item = document.querySelector("#name").value;
+			console.log("ready to send");
+			console.log(item);
+			ipcRenderer.send("task:add", item);
+		}
+
+	</script>
+
+</body>
+</html>

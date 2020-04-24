@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>New Project</title>
+	<link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+	<div class = "container">
+		<form>
+			<div>
+				<label>Project Name</label>
+				<input type = "text" id = "item" autofocus required>
+			</div>
+			<button class = "btn waves-effect waves-light" type = "submit">Create</button>
+		</form>
+	</div>
+
+	<script>
+		const electron = require("electron");
+		const {ipcRenderer} = electron;
+
+		const form = document.querySelector("form");
+		form.addEventListener("submit", submitForm);
+
+		function submitForm(e)
+		{
+			e.preventDefault();
+
+			const item = document.querySelector("#item").value;	//look up dom crash course, traversy media
+			ipcRenderer.send("item:add", item);	//works kind of like sockets, need to catch it in main.js
+		}
+	</script>
+</body>
+</html>

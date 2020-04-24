@@ -1,0 +1,14 @@
+{
+  "name": "seniorproject",
+  "version": "1.0.0",
+  "description": "Project Manager Desktop App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Oscar Alcantar",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^8.2.3"
+  }
+}

@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Project Manager</title>
+	<!--<h1>Ongoing Projects</h1>-->
+	<link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<!--<link rel = "stylesheet" href = "style.css" type = "text/css">-->
+</head>
+	
+<body>
+	<!--<h1>Project Manager</h1>-->
+	
+	<nav>
+		<div class = "nav-wrapper cyan darken-3">
+			<a class = "brand-logo center">Ongoing Projects</a>
+		</div>
+	</nav>
+	<br><br>
+	
+	<!--<nav>
+		<div class = "nav-content">
+			<a class ="nav-title">Ongoing Projects</a>
+		</div>
+	</nav>-->
+	<div class = "row">
+		<div class = "col s12 m6">
+			<ul>
+				<br><br>
+			</ul>
+			<!--<div class = "card-action">
+				<a href = "existingProject.html">Expand Project</a>
+			</div>-->
+		</div>
+	</div>
+
+
+	
+	
+	
+		
+	<script>
+		const electron = require("electron");
+		const {ipcRenderer} = electron;
+		const ul = document.querySelector("ul");
+
+		//Catch item to add
+		ipcRenderer.on("item:add", function(e, item)
+		{
+			ul.className = "card blue-grey darken-1";
+			const li = document.createElement("li");
+			const itemText = document.createTextNode(item);
+			li.appendChild(itemText);
+			ul.appendChild(li);
+		});
+		//clear items
+		ipcRenderer.on("item:clear", function(){
+			ul.innerHTML = " ";
+		});
+		
+		//have item respond to double click
+		ul.addEventListener("dblclick", goToProject);
+
+		function goToProject()
+		{
+			//const li = document.querySelector("li");
+			//const item = document
+			if(ul.value !== null)
+			{
+				ipcRenderer.send("project", ul.value);
+			}
+		}
+
+		function removeItem(e)
+		{
+			e.target.remove();
+			if(ul.children.length == 0)
+			{
+				ul.className = "";
+			}
+		}
+
+	</script>
+</body>
+</html>

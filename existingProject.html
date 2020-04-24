@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title id = "title">Project Name</title>
+	<link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+	<nav>
+		<div class = "nav-wrapper cyan darken-3">
+			<a class = "brand-logo center">Tasks</a>
+			<br><br>
+			<!--<p class = "black-text">
+				Here is where all of the tasks go as they are created.
+			</p>-->
+		</div>
+	</nav>
+	<div class = "row">
+		<div class = "col s12 m6">
+			<ul class = "collection">
+				<li class = "collection-item">Task 1</li>
+				<li class = "collection-item">Task 2</li>
+				<li class = "collection-item">Task 3</li>
+
+			</ul>
+		</div>
+	</div>
+			
+	<form>
+		<!--<label for = "task">New Task</label>-->
+		<div class = "row">
+			<div class = " col s1 m6 l3">
+				<!--<button class = "btn waves-effect waves-light" type = "submit">Create Task</button>
+				<!--<a href: "/newTask.html">Create Task</a>-->
+			</div>
+		</div>
+	</form>
+
+	<script>
+		const electron = require("electron");
+		const {ipcRenderer} = electron;
+
+		const ul = document.querySelector("ul");
+		//const ul = document.getElementsByTagName("ul");
+		const form = document.querySelector("form");
+		form.addEventListener("submit", createTask);
+
+		var ti = document.getElementsById("title");
+		ipcRenderer.on("project", item)
+		{
+			//const itemText = document.createTextNode(item);
+			ti.textContent = item;
+		});
+
+		ipcRenderer.on("task:add", function(e, item)
+		{
+			//ul.className = "collection";
+			console.log("Trying to add a task to the list");
+			const li = document.createElement("li");
+			li.className = "collection-item";
+			const itemText = document.createTextNode(item);
+			li.appendChild(itemText);
+			ul.appendChild(li);
+		});
+
+		function createTask(e)
+		{
+			e.preventDefault();
+			console.log("Button was clicked");
+			//const item = document.querySelector("#title").value;	//look up don crash course, traversy media
+			ipcRenderer.send("task", item);	//works kind of like sockets, need to catch it in main.js
+		}
+
+		function removeItem(e)
+		{
+			e.target.remove();
+			if(ul.children.length == 0)
+			{
+				ul.className = "";
+			}
+		}
+	</script>
+</body>
+</html>
