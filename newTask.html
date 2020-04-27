@@ -34,19 +34,19 @@
 			<label>Priority</label>
 			<p>
 				<label>
-					<input type = "radio" name = "answer">
+					<input type = "radio" name = "answer" id="high">
 					<span>High</span>
 				</label>
 			</p>
 			<p>
 				<label>
-					<input type = "radio" name = "answer">
+					<input type = "radio" name = "answer" id="medium">
 					<span>Medium</span>
 				</label>
 			</p>
 			<p>
 				<label>
-					<input type = "radio" name = "answer">
+					<input type = "radio" name = "answer" id="low">
 					<span>Low</span>
 				</label>
 			</p>
@@ -79,13 +79,27 @@
 			var instances = M.FormSelect.init(elems, options);
 		});
 
-		function submitForm(e)
-		{
-			e.preventDefault();
-			const item = document.querySelector("#name").value;
+        function submitForm(e) {
+            e.preventDefault();
+            //going to add new stuff and may break app
+            const items = [2];
+            items[0] = document.querySelector("#name").value;
+            if (document.getElementById("high").checked) {
+                items[1] = 2; //high
+            }
+            else if (document.getElementById("medium").checked) {
+                items[1] = 1; //medium
+            }
+            else  {
+                items[1] = 0; //low
+            }
+            ipcRenderer.send("task:add", items);
+            //..........
+            //everything under here is the old implementation
+			/*const item = document.querySelector("#name").value;
 			console.log("ready to send");
 			console.log(item);
-			ipcRenderer.send("task:add", item);
+			ipcRenderer.send("task:add", item);*/
 		}
 
 	</script>

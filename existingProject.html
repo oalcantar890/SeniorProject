@@ -41,34 +41,61 @@
 		const {ipcRenderer} = electron;
 
 		const ul = document.querySelector("ul");
-		//const ul = document.getElementsByTagName("ul");
 		const form = document.querySelector("form");
 		form.addEventListener("submit", createTask);
 
         var ti = document.querySelector("title");
+        var listOfTasks = [];
+        console.log("Length is " + listOfTasks.length);
 
-        //const listOfTasks = new Queue();
-
+        //check if listOfTasks is empty or not
+        //if not empty, restore tasks to the existing project
+        if (listOfTasks.length > 0)
+        {
+            for (let i = 0; i < listOfTasks.length; i++)
+            {
+                ul.appendChild(listOfTasks[i]);
+            }
+        }
 
         ipcRenderer.on("existProject", function(e, item)
 		{
-			//const itemText = document.createTextNode(item);
             console.log("Item = " + item);
 			ti.innerHTML = item;
 		});
 
 		ipcRenderer.on("task:add", function(e, item)
-		{
-			console.log("Trying to add a task to the list");
+        {
+            //trying to get colored badge based to show up based on the priority of the task
+            const a = document.createElement("a");
+            const span = document.createElement("span");
+            a.className = "collection-item active grey darken-2 white-text";
+            const itemText = document.createTextNode(item[0]);
+            a.appendChild(itemText);
+            ul.appendChild(a);
+            if (items[1] == 2){
+                span.className = "badge red";
+            } else if (items[1] == 1){
+                span.className = "badge brown";
+            }
+            else{
+                span.className = "badge white";
+            }
+            ul.appendChild(span);
+            //old implementation
+            /*console.log("Trying to add a task to the list");
 			const li = document.createElement("li");
-			li.className = "collection-item grey darken-2 white-text";
+			li.className = "collection-item active grey darken-2 white-text";
+            //const a = document.createElement("a");
+            //a.className = "collection-item active grey darken-2 white-text";
 			const itemText = document.createTextNode(item);
 			li.appendChild(itemText);
+            //a.appendChild(itemText);
+            //ul.appendChild(a);
             ul.appendChild(li);
-            listOfTasks.enqueue(li);
+            listOfTasks.push(li);
+            //listOfTasks.push(a);*/
         });
-
-        const listOfTasks = new Queue();
 
 		function createTask(e)
 		{

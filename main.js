@@ -11,7 +11,7 @@ let newProjectWindow;
 let existingProjectWindow;
 let newTaskWindow;
 let viewLogWindow;
- 
+
 //Listen for the app to be ready
 app.on("ready", function()
 {
@@ -67,7 +67,6 @@ function createLogWindow()
 	}));
 
 	viewLogWindow.on("close", function(){
-		//existingProjectWindow.show();
         viewLogWindow = null;
         const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
         Menu.setApplicationMenu(mainMenu);
@@ -78,10 +77,7 @@ function createLogWindow()
 function createTaskWindow()
 {
 	console.log("You have arrived");
-	newTaskWindow = new BrowserWindow({width: 800, height: 600, webPreferences: {nodeIntegration: true}, frame: false});
-	
-	//const mainMenu = Menu.buildFromTemplate(existingProjectMenuTemplate);
-	//Menu.setApplicationMenu(mainMenu);
+	newTaskWindow = new BrowserWindow({width: 600, height: 500, webPreferences: {nodeIntegration: true}, frame: false});
 
 	newTaskWindow.loadURL(url.format({
 	pathname: path.join(__dirname, "newTask.html"), 
@@ -112,15 +108,14 @@ function createProjectWindow()
 	slashes: true
 	}));
 
-	//const mainMenu = Menu.buildFromTemplate(existingProjectMenuTemplate);
-	//Menu.setApplicationMenu(mainMenu);
-
 	//Garbage collection handle, sets window to null once it closes so it 
 	//doesn't take up memory space
 	newProjectWindow.on("close", function(){
 		newProjectWindow = null;
 	});
 }
+
+
 //Catch item:add
 ipcMain.on("item:add", function(e, item)
 {
@@ -138,7 +133,8 @@ ipcMain.on("project", function(e, item)
     console.log("Main received: " + item + " Now sending to existingProject");
     createExistingProjectWindow();
 	
-    existingProjectWindow.on("did-finish-load", function () {
+    existingProjectWindow.on("did-finish-load", function () {   //see if "did-finish-load" needs to be sent from somewhere
+        console.log("Is the window on?");
         existingProjectWindow.webContents.send("existProject", item);
         console.log("ExistingProjectWindow loaded");
     });
@@ -147,12 +143,19 @@ ipcMain.on("project", function(e, item)
 });
 
 //catch created task
-ipcMain.on("task:add", function(e, item)
+ipcMain.on("task:add", function(e, items)
 {
-	console.log("Task added");
+    //testing this out, app may break
+    console.log("Task added");
+    console.log("Item[0]: " + items[0]);
+    console.log("Item[1]: " + items[1]);
+    existingProjectWindow.webContents.send("task:add", items);
+    newTaskWindow.close();
+    //old implementation
+	/*console.log("Task added");
 	console.log(item);
 	existingProjectWindow.webContents.send("task:add", item);
-	newTaskWindow.close();
+	newTaskWindow.close();*/
 });
 
 //catch new task
@@ -168,12 +171,10 @@ ipcMain.on("task", function(e, item)
 	}));
 
 	newTaskWindow.on("close", function(){
-		//existingProjectWindow.show();
 		const mainMenu = Menu.buildFromTemplate(existingProjectMenuTemplate);
 		Menu.setApplicationMenu(mainMenu);
 		newTaskWindow = null;
 	});
-	//existingProjectWindow.hide();
 });
 
 const backMenu = [
