@@ -35,6 +35,24 @@ app.on("ready", function()
 	Menu.setApplicationMenu(mainMenu);
 });
 
+function createExistingProjectWindow()
+{
+    existingProjectWindow = new BrowserWindow({ webPreferences: { nodeIntegration: true } });
+
+    const mainMenu = Menu.buildFromTemplate(existingProjectMenuTemplate);
+    Menu.setApplicationMenu(mainMenu);
+
+    existingProjectWindow.loadURL(url.format({
+        pathname: path.join(__dirname, "existingProject.html"),
+        protocol: "file:",
+        slashes: true
+    }));
+
+    existingProjectWindow.on("close", function () {
+        mainWindow.show();
+        existingProjectWindow = null;
+    });
+}
 function createLogWindow()
 {
 	viewLogWindow = new BrowserWindow({webPreferences: {nodeIntegration: true}});
@@ -50,14 +68,17 @@ function createLogWindow()
 
 	viewLogWindow.on("close", function(){
 		//existingProjectWindow.show();
-		viewLogWindow = null;
+        viewLogWindow = null;
+        const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+        Menu.setApplicationMenu(mainMenu);
+        mainWindow.show();
 	});
 }
 //handle create task window
 function createTaskWindow()
 {
 	console.log("You have arrived");
-	newTaskWindow = new BrowserWindow({webPreferences: {nodeIntegration: true}, frame: false});
+	newTaskWindow = new BrowserWindow({width: 800, height: 600, webPreferences: {nodeIntegration: true}, frame: false});
 	
 	//const mainMenu = Menu.buildFromTemplate(existingProjectMenuTemplate);
 	//Menu.setApplicationMenu(mainMenu);
@@ -114,24 +135,14 @@ ipcMain.on("item:add", function(e, item)
 //Catch project
 ipcMain.on("project", function(e, item)
 {
-	console.log("hello");
-	existingProjectWindow = new BrowserWindow({ title: item, webPreferences: {nodeIntegration: true}});
+    console.log("Main received: " + item + " Now sending to existingProject");
+    createExistingProjectWindow();
 	
-	const mainMenu = Menu.buildFromTemplate(existingProjectMenuTemplate);
-	Menu.setApplicationMenu(mainMenu);
-
-	existingProjectWindow.loadURL(url.format({
-	pathname: path.join(__dirname, "existingProject.html"), 
-	protocol: "file:", 
-	slashes: true
-	}));
+    existingProjectWindow.on("did-finish-load", function () {
+        existingProjectWindow.webContents.send("existProject", item);
+        console.log("ExistingProjectWindow loaded");
+    });
 	
-	existingProjectWindow.webContents.send("project", item);
-	existingProjectWindow.on("close", function(){
-		mainWindow.show();
-		existingProjectWindow = null;
-	});
-	//Testing hiding main window after existing project window opens
 	mainWindow.hide();
 });
 
@@ -166,19 +177,18 @@ ipcMain.on("task", function(e, item)
 });
 
 const backMenu = [
-	{
-		label: "Exit",
-		accelerator: process.platform == "darwin" ? "Command + B": "Ctrl + B",
-		click()
-		{
-			viewLogWindow.close();
-			const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-			Menu.setApplicationMenu(mainMenu);
-			mainWindow.show();
-		}
-		
-	}
-]
+    {
+        label: "Exit",
+        accelerator: process.platform == "darwin" ? "Command + M" : "Ctrl + M",
+        click() {
+            viewLogWindow.close();
+            const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+            Menu.setApplicationMenu(mainMenu);
+            mainWindow.show();
+        }
+
+    }
+];
 const existingProjectMenuTemplate = [
 	{
 		label:"File",
@@ -200,7 +210,7 @@ const existingProjectMenuTemplate = [
 				click()
 				{
 					existingProjectWindow.close();
-					const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+                    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
 					Menu.setApplicationMenu(mainMenu);
 					mainWindow.show();
 				}
@@ -219,17 +229,10 @@ const existingProjectMenuTemplate = [
 		label: "Settings",
 		submenu:[
 			{
-				label: ""
+				label: "Night Mode"
 			}
 		]
 	},
-	{
-		label: "Manage"
-		
-	},
-	{
-		label: "Status"
-	}
 ];
 //Create menu template, an array
 const mainMenuTemplate = [
@@ -267,10 +270,12 @@ const mainMenuTemplate = [
 		label: "Log",
 		submenu:[
 			{
-				label: "View Log",
+                label: "View Log",
+                accelerator: process.platform == "darwin" ? "Command+L" : "Ctrl + L",
 				click()
 				{
-					createLogWindow();
+                    createLogWindow();
+                    mainWindow.hide();
 				}
 			},
 			{
@@ -286,16 +291,21 @@ const mainMenuTemplate = [
 		label: "Settings",
 		submenu:[
 			{
-				label: ""
+				label: "Night Mode"
 			}
 		]
 	},
 	{
-		label: "Manage"
+        label: "Organize",
+        submenu: [
+            {
+                label: "Completion",
+            },
+            {
+                label: "Date",
+            }
+        ]
 		
-	},
-	{
-		label: "Status"
 	}
 ];
 

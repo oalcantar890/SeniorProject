@@ -5,34 +5,59 @@
     <meta charset="utf-8" />
     <title>Log</title>
 	<link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-</head>
-<body>
-	<table>
-		<thead>
-			<tr>
-				<th>Task</th>
-				<th>Completed</th>
-				<th>Time Spend</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>Task 1</td>
-				<td>Yes</td>
-				<td>1 hr</td>
-			</tr>
-			<tr>
-				<td>Task 2</td>
-				<td>No</td>
-				<td>30 min</td>
-			</tr>
-			<tr>
-				<td>Task 3</td>
-				<td>No</td>
-				<td>2 hr</td>
-			</tr>
-		</tbody>
+    
+    <!--<link rel = "stylesheet" href = "style.css" type= "text/css"/>-->
 
-	</table>
+</head>
+<body class="grey">
+    <header>
+    <nav>
+        <div class="nav-wrapper grey darken-3">
+                <a class="brand-logo center">Daily Log: <span id="datetime"></span></a>
+        </div>
+    </nav>
+    </header>
+
+    <table class="centered">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Task</th>
+                <th>Completed</th>
+                <th>Time Spent</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Project A</td>
+                <td>Task 1</td>
+                <td>Yes</td>
+                <td>1 hr</td>
+            </tr>
+            <tr>
+                <td>Project A</td>
+                <td>Task 2</td>
+                <td>No</td>
+                <td>30 min</td>
+            </tr>
+            <tr>
+                <td>Project A</td>
+                <td>Task 3</td>
+                <td>No</td>
+                <td>2 hr</td>
+            </tr>
+        </tbody>
+
+    </table>
+    <div>
+        
+    </div>
+    <script>
+        var dt = new Date();
+        const item = document.getElementById("datetime");
+        item.innerHTML = dt.toLocaleDateString();
+
+    </script>
 </body>
+
 </html>

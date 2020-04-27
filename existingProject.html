@@ -5,9 +5,9 @@
     <title id = "title">Project Name</title>
 	<link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
-<body>
+<body class="grey">
 	<nav>
-		<div class = "nav-wrapper cyan darken-3">
+		<div class = "nav-wrapper grey darken-3">
 			<a class = "brand-logo center">Tasks</a>
 			<br><br>
 			<!--<p class = "black-text">
@@ -18,9 +18,9 @@
 	<div class = "row">
 		<div class = "col s12 m6">
 			<ul class = "collection">
-				<li class = "collection-item">Task 1</li>
-				<li class = "collection-item">Task 2</li>
-				<li class = "collection-item">Task 3</li>
+				<!--<li class = "collection-item z-depth-4 grey darken-2 white-text">Task 1</li>
+				<li class = "collection-item z-depth-4">Task 2</li>
+				<li class = "collection-item z-depth-4">Task 3</li>-->
 
 			</ul>
 		</div>
@@ -45,23 +45,30 @@
 		const form = document.querySelector("form");
 		form.addEventListener("submit", createTask);
 
-		var ti = document.getElementsById("title");
-		ipcRenderer.on("project", item)
+        var ti = document.querySelector("title");
+
+        //const listOfTasks = new Queue();
+
+
+        ipcRenderer.on("existProject", function(e, item)
 		{
 			//const itemText = document.createTextNode(item);
-			ti.textContent = item;
+            console.log("Item = " + item);
+			ti.innerHTML = item;
 		});
 
 		ipcRenderer.on("task:add", function(e, item)
 		{
-			//ul.className = "collection";
 			console.log("Trying to add a task to the list");
 			const li = document.createElement("li");
-			li.className = "collection-item";
+			li.className = "collection-item grey darken-2 white-text";
 			const itemText = document.createTextNode(item);
 			li.appendChild(itemText);
-			ul.appendChild(li);
-		});
+            ul.appendChild(li);
+            listOfTasks.enqueue(li);
+        });
+
+        const listOfTasks = new Queue();
 
 		function createTask(e)
 		{
