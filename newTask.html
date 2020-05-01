@@ -30,7 +30,7 @@
 			<br><br>
 		</div>
 		<div id = "priority">
-			<!--<p>Priority</p>-->
+			
 			<label>Priority</label>
 			<p>
 				<label>
@@ -50,15 +50,7 @@
 					<span>Low</span>
 				</label>
 			</p>
-			<!--<input type="radio" name="answer" id="highPriority" value="highPriority">
-			<label for="highPriority">High</label>
-			<br>
-			<input type="radio" name="answer" id="medPriority" value="medPriority">
-			<label for="medPriority">Medium</label>
-			<br>
-			<input type="radio" name="answer" id="lowPriority" value="lowPriority">
-			<label for="lowPriority">Low</label>
-			<br>-->
+			
 		</div>
 		<div>
 			<br><br>
@@ -94,12 +86,7 @@
                 items[1] = 0; //low
             }
             ipcRenderer.send("task:add", items);
-            //..........
-            //everything under here is the old implementation
-			/*const item = document.querySelector("#name").value;
-			console.log("ready to send");
-			console.log(item);
-			ipcRenderer.send("task:add", item);*/
+            
 		}
 
 	</script>

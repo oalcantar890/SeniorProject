@@ -2,7 +2,7 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title id = "title">Project Name</title>
+    <title id = "title"></title>
 	<link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body class="grey">
@@ -10,20 +10,21 @@
 		<div class = "nav-wrapper grey darken-3">
 			<a class = "brand-logo center">Tasks</a>
 			<br><br>
-			<!--<p class = "black-text">
-				Here is where all of the tasks go as they are created.
-			</p>-->
+			
 		</div>
 	</nav>
 	<div class = "row">
-		<div class = "col s12 m6">
-			<ul class = "collection">
-				<!--<li class = "collection-item z-depth-4 grey darken-2 white-text">Task 1</li>
-				<li class = "collection-item z-depth-4">Task 2</li>
-				<li class = "collection-item z-depth-4">Task 3</li>-->
+        <div class="col s8">
+			<ul class = "collection" id="taskList">
+				
 
 			</ul>
 		</div>
+        <div class= "col s2">
+            <ul id="completeButtons">
+
+            </ul>
+        </div>
 	</div>
 			
 	<form>
@@ -40,12 +41,15 @@
 		const electron = require("electron");
 		const {ipcRenderer} = electron;
 
-		const ul = document.querySelector("ul");
-		const form = document.querySelector("form");
+		//const ul = document.querySelector("ul");
+        const ul = document.getElementById("taskList");
+        const buttons = document.getElementById("completeButtons");
+        const form = document.querySelector("form");
+        const ti = document.querySelector("title");
+
 		form.addEventListener("submit", createTask);
 
-        var ti = document.querySelector("title");
-        var listOfTasks = [];
+        const listOfTasks = [];
         console.log("Length is " + listOfTasks.length);
 
         //check if listOfTasks is empty or not
@@ -57,44 +61,45 @@
                 ul.appendChild(listOfTasks[i]);
             }
         }
-
-        ipcRenderer.on("existProject", function(e, item)
-		{
-            console.log("Item = " + item);
-			ti.innerHTML = item;
-		});
-
-		ipcRenderer.on("task:add", function(e, item)
+       
+		ipcRenderer.on("task:add", function(e, items)
         {
             //trying to get colored badge based to show up based on the priority of the task
             const a = document.createElement("a");
             const span = document.createElement("span");
+            const button = document.createElement("button");
+            const br = document.createElement("br");
+
+            button.innerHTML = "Done";
+            //const icon = document.createElement("i");
             a.className = "collection-item active grey darken-2 white-text";
-            const itemText = document.createTextNode(item[0]);
+            a.href = "#!";
+            button.className = "btn-small grey";
+            button.type = "submit";
+            //icon.className = "material-icons";
+            //icon.innerHTML = "send";
+            const itemText = document.createTextNode(items[0]);
             a.appendChild(itemText);
+            if (items[1] == 2)
+            {
+                span.className = "badge red z-depth-3";
+            }
+            else if (items[1] == 1)
+            {
+                span.className = "badge brown z-depth-3";
+            }
+            else
+            {
+                span.className = "badge white z-depth-3";
+            }
+            //button.appendChild(icon);
+            a.appendChild(span);
+            //a.appendChild(button);
             ul.appendChild(a);
-            if (items[1] == 2){
-                span.className = "badge red";
-            } else if (items[1] == 1){
-                span.className = "badge brown";
-            }
-            else{
-                span.className = "badge white";
-            }
-            ul.appendChild(span);
-            //old implementation
-            /*console.log("Trying to add a task to the list");
-			const li = document.createElement("li");
-			li.className = "collection-item active grey darken-2 white-text";
-            //const a = document.createElement("a");
-            //a.className = "collection-item active grey darken-2 white-text";
-			const itemText = document.createTextNode(item);
-			li.appendChild(itemText);
-            //a.appendChild(itemText);
-            //ul.appendChild(a);
-            ul.appendChild(li);
-            listOfTasks.push(li);
-            //listOfTasks.push(a);*/
+            //buttons.appendChild(button);
+            //buttons.appendChild(br);
+            //buttons.appendChild(br);
+            listOfTasks.push(a);
         });
 
 		function createTask(e)

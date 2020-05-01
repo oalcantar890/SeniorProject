@@ -35,9 +35,9 @@ app.on("ready", function()
 	Menu.setApplicationMenu(mainMenu);
 });
 
-function createExistingProjectWindow()
+function createExistingProjectWindow(windowTitle)
 {
-    existingProjectWindow = new BrowserWindow({ webPreferences: { nodeIntegration: true } });
+    existingProjectWindow = new BrowserWindow({title: windowTitle, webPreferences: { nodeIntegration: true } });
 
     const mainMenu = Menu.buildFromTemplate(existingProjectMenuTemplate);
     Menu.setApplicationMenu(mainMenu);
@@ -131,31 +131,19 @@ ipcMain.on("item:add", function(e, item)
 ipcMain.on("project", function(e, item)
 {
     console.log("Main received: " + item + " Now sending to existingProject");
-    createExistingProjectWindow();
-	
-    existingProjectWindow.on("did-finish-load", function () {   //see if "did-finish-load" needs to be sent from somewhere
-        console.log("Is the window on?");
-        existingProjectWindow.webContents.send("existProject", item);
-        console.log("ExistingProjectWindow loaded");
-    });
-	
+    createExistingProjectWindow(item);	
 	mainWindow.hide();
 });
 
 //catch created task
 ipcMain.on("task:add", function(e, items)
 {
-    //testing this out, app may break
+    
     console.log("Task added");
     console.log("Item[0]: " + items[0]);
     console.log("Item[1]: " + items[1]);
     existingProjectWindow.webContents.send("task:add", items);
     newTaskWindow.close();
-    //old implementation
-	/*console.log("Task added");
-	console.log(item);
-	existingProjectWindow.webContents.send("task:add", item);
-	newTaskWindow.close();*/
 });
 
 //catch new task
@@ -225,7 +213,19 @@ const existingProjectMenuTemplate = [
 			}
 		]
 
-	},
+    },
+    {
+        label: "Organize",
+        submenu: [
+            {
+                label: "Priority",
+            },
+            {
+                label: "Duration",
+            }
+        ]
+
+    },
 	{
 		label: "Settings",
 		submenu:[
