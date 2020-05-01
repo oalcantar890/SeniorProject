@@ -6,64 +6,78 @@
 	<link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body class="grey">
-	<nav>
-		<div class = "nav-wrapper grey darken-3">
-			<a class = "brand-logo center">Tasks</a>
-			<br><br>
-			
-		</div>
-	</nav>
-	<div class = "row">
-        <div class="col s8">
-			<ul class = "collection" id="taskList">
-				
+    <nav>
+        <div class="nav-wrapper grey darken-3">
+            <a class="brand-logo center">Tasks</a>
+            <br><br>
 
-			</ul>
-		</div>
-        <div class= "col s2">
-            <ul id="completeButtons">
-
-            </ul>
         </div>
-	</div>
-			
-	<form>
-		<!--<label for = "task">New Task</label>-->
-		<div class = "row">
-			<div class = " col s1 m6 l3">
-				<!--<button class = "btn waves-effect waves-light" type = "submit">Create Task</button>
-				<!--<a href: "/newTask.html">Create Task</a>-->
-			</div>
-		</div>
-	</form>
+    </nav>
+    <div class="row">
+        <div class="col s8">
+            <ul class="collection" id="taskList"></ul>
+        </div>
+        <div class="col s2">
+            <ul id="completeButtons"></ul>
+        </div>
+    </div>
 
-	<script>
-		const electron = require("electron");
-		const {ipcRenderer} = electron;
+    <form>
+        <!--<label for = "task">New Task</label>-->
+        <div class="row">
+            <div class=" col s1 m6 l3">
+                <!--<button class = "btn waves-effect waves-light" type = "submit">Create Task</button>
+                <!--<a href: "/newTask.html">Create Task</a>-->
+            </div>
+        </div>
+    </form>
 
-		//const ul = document.querySelector("ul");
+    <footer class="page-footer grey darken-3 z-depth-4">
+        <style>
+            html {
+                min-height: 100%;
+            }
+
+            footer {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+            }
+        </style>
+        <div class="container">
+            <div class="row center-align">
+                <div class="col s12">
+                    <button class="btn blue-grey darken-3 white-text z-depth-3" type="submit">Create Task +</button>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <script>
+        const electron = require("electron");
+        const { ipcRenderer } = electron;
+
+        //const ul = document.querySelector("ul");
         const ul = document.getElementById("taskList");
         const buttons = document.getElementById("completeButtons");
         const form = document.querySelector("form");
         const ti = document.querySelector("title");
 
-		form.addEventListener("submit", createTask);
+        form.addEventListener("submit", createTask);
 
         const listOfTasks = [];
         console.log("Length is " + listOfTasks.length);
 
         //check if listOfTasks is empty or not
         //if not empty, restore tasks to the existing project
-        if (listOfTasks.length > 0)
-        {
-            for (let i = 0; i < listOfTasks.length; i++)
-            {
+        if (listOfTasks.length > 0) {
+            for (let i = 0; i < listOfTasks.length; i++) {
                 ul.appendChild(listOfTasks[i]);
             }
         }
-       
-		ipcRenderer.on("task:add", function(e, items)
-        {
+
+        ipcRenderer.on("task:add", function (e, items) {
             //trying to get colored badge based to show up based on the priority of the task
             const a = document.createElement("a");
             const span = document.createElement("span");
@@ -80,16 +94,13 @@
             //icon.innerHTML = "send";
             const itemText = document.createTextNode(items[0]);
             a.appendChild(itemText);
-            if (items[1] == 2)
-            {
+            if (items[1] == 2) {
                 span.className = "badge red z-depth-3";
             }
-            else if (items[1] == 1)
-            {
+            else if (items[1] == 1) {
                 span.className = "badge brown z-depth-3";
             }
-            else
-            {
+            else {
                 span.className = "badge white z-depth-3";
             }
             //button.appendChild(icon);
@@ -102,22 +113,19 @@
             listOfTasks.push(a);
         });
 
-		function createTask(e)
-		{
-			e.preventDefault();
-			console.log("Button was clicked");
-			//const item = document.querySelector("#title").value;	//look up don crash course, traversy media
-			ipcRenderer.send("task", item);	//works kind of like sockets, need to catch it in main.js
-		}
+        function createTask(e) {
+            e.preventDefault();
+            console.log("Button was clicked");
+            //const item = document.querySelector("#title").value;	//look up don crash course, traversy media
+            ipcRenderer.send("task", item);	//works kind of like sockets, need to catch it in main.js
+        }
 
-		function removeItem(e)
-		{
-			e.target.remove();
-			if(ul.children.length == 0)
-			{
-				ul.className = "";
-			}
-		}
-	</script>
+        function removeItem(e) {
+            e.target.remove();
+            if (ul.children.length == 0) {
+                ul.className = "";
+            }
+        }
+    </script>
 </body>
 </html>
